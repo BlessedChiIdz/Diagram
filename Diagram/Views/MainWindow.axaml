@@ -1,0 +1,23 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Diagram.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="Diagram.Views.MainWindow"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="Diagram">
+
+	<Design.DataContext>
+		<vm:MainWindowViewModel/>
+	</Design.DataContext>
+	<UserControl>
+		<Grid ColumnDefinitions="150,*">
+			<Grid RowDefinitions="*,*,*,*" Grid.Column="0" Margin="10,0,0,0">
+				<TextBox Text="{Binding Coor}" Grid.Row="0" Height="50"></TextBox>
+				<Button Command="{Binding CreateClass}" Grid.Row="1">Add</Button>
+			</Grid>
+			<Canvas x:Name="Canv" Name="MyCanv" Grid.Column="1" PointerPressed="PointerPressedOnCanv"></Canvas>
+		</Grid>
+	</UserControl>
+</Window>
