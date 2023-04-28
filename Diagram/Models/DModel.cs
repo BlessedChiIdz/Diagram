@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Avalonia.Controls.Shapes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,5 +24,9 @@ namespace Diagram.Models
         public List<String> Attributes = new List<string>();
 
         public List<String> Operations = new List<string>();
+
+        public List<int> StLinePoint = new List<int>();
+
+        public List<int> EndLinePoint = new List<int>();
     }
 }

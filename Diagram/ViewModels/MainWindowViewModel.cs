@@ -13,11 +13,12 @@ using System.Text;
 
 namespace Diagram.ViewModels
 {
-    public partial class MainWindowViewModel : ViewModelBase
+    internal partial class MainWindowViewModel : ViewModelBase
     {
-        ObservableCollection<DModel> dModels = new ObservableCollection<DModel>();
+        public ObservableCollection<DModel> Coll = new ObservableCollection<DModel>();
         public Canvas _canv;
         public string _name;
+        
         public string Name
         {
             get => _name;
@@ -31,6 +32,7 @@ namespace Diagram.ViewModels
         }
         public void CreateClass()
         {
+            Rectangle Rec = new Rectangle();
             StackPanel stackPanel = new StackPanel();
             TextBox textBox = new TextBox();
             Border border = new Border();
@@ -38,48 +40,27 @@ namespace Diagram.ViewModels
             border.BorderThickness = thickness;
             border.BorderBrush = Brushes.Black;
             stackPanel.Children.Add(border);
-            textBox.Text = "qwe";
-            textBox.Width = 100;
+            textBox.Text = Name;
+            textBox.Width = 200;
             textBox.Margin = thickness;
             stackPanel.Height = 50;
+            stackPanel.Name = textBox.Text;
             stackPanel.Children.Add(textBox);
+            Rec.Width = 10;
+            Rec.Height = 10;
+            Rec.StrokeThickness = 2;
+            Rec.Stroke = Brushes.Black;
+            Rec.Fill = Brushes.Black;
+            Canvas.SetLeft(Rec, 200);
+            Canvas.SetTop(Rec, 0);
+            stackPanel.Children.Add(Rec);
             _canv.Children.Add(stackPanel);
-
-
-
-
-            DModel dModel = new DModel();
-            dModel.Name = "qweew";
-            dModel.Stereotip = "abstract";
-            dModel.Vidimost = false;
-            dModel.Attributes.Add("qweqe");
-            dModel.Operations.Add("zxcxzc");
-            dModel.Name = "Class1";
-            Rectangle newRec = new Rectangle();
-            int height = 100;
-            foreach (string qwe in dModel.Attributes)
+            Coll.Add(new DModel
             {
-                height += 20;
-            }
-            newRec.StrokeThickness = dModel.Thick;
-            newRec.Width = dModel.Width;
-            newRec.Height = height;
-            newRec.Stroke = Brushes.Black;
-            string[] LocalCor = Coor.Split(" ");
-            int Cor0 = Convert.ToInt32(LocalCor[0]);
-            int Cor1 = Convert.ToInt32(LocalCor[1]);
-            Canvas.SetLeft(newRec,Cor0);
-            Canvas.SetTop(newRec, Cor1);
-            _canv.Children.Add(newRec);
-            Rectangle nameRec = new Rectangle();
-            nameRec.StrokeThickness = dModel.Thick;
-            nameRec.Width = dModel.Width;
-            nameRec.Height = dModel.BlockHeight;
-            nameRec.Stroke = Brushes.Black;
-            Canvas.SetLeft(nameRec, Cor0);
-            Canvas.SetTop(nameRec, Cor1);
-            _canv.Children.Add(nameRec);
+                Name = textBox.Text,
+                Vidimost = true,
 
+            }) ;
         }
         public MainWindowViewModel(MainWindow mw)
         {
