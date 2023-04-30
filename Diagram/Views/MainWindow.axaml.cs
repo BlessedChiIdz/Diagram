@@ -5,6 +5,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.VisualTree;
+using Diagram.Models;
 using Diagram.ViewModels;
 using System.Data;
 using System.Linq;
@@ -13,7 +14,7 @@ namespace Diagram.Views
     public partial class MainWindow : Window
     {
         private Point pointerPosInShape;
-        private Line line = new Line();
+        private DefLine line = new DefLine();
         public MainWindow()
         {
             InitializeComponent();
@@ -31,8 +32,16 @@ namespace Diagram.Views
                 }
                 if(args.Source is Border border)
                 {
+                    pointerPosInShape = args.GetPosition(border);
                     this.PointerMoved += MoveStruct;
                     this.PointerReleased += StopStruct;
+                }
+                if(args.Source is Line line)
+                {
+                    if(line.DataContext is DefLine def)
+                    {
+                        mw.COLL.Remove(def);
+                    }
                 }
             }
         }
@@ -45,22 +54,31 @@ namespace Diagram.Views
                     );
             if(DataContext is MainWindowViewModel wm)
             {
-                if(args.Source is Border border)
+                if(args.Source.InteractiveParent is StackPanel st)
                 {
-                    Canvas.SetLeft((StackPanel)border.Parent, currentPointPos.X);
-                    Canvas.SetTop((StackPanel)border.Parent, currentPointPos.Y);
-                    StackPanel stack = (StackPanel)border.Parent;
-                    Canvas canvas = (Canvas)stack.Parent;
-                    for(int i = 0; i < canvas.Children.Count(); i++)
+                    if (st.DataContext is DefStackPanel dModel) 
                     {
-                        if (canvas.Children[i] is Line lineqwe)
+                        dModel.StartPoint = new Point
+                        (
+                            currentPointPos.X - pointerPosInShape.X,
+                            currentPointPos.Y - pointerPosInShape.Y);
+
+
+                        for (int i = 0; i < wm.COLL.Count(); i++)
                         {
-                            Point qwe = new Point(500, 500);
-                            lineqwe.StartPoint = qwe;
+                            if (wm.COLL[i] is DefLine line)
+                            {
+                                if(dModel.Number == line.ConnNumbStart)
+                                    line.StartPoint = dModel.StartPoint;
+                                if (dModel.Number == line.ConnNumbEnd)
+                                    line.EndPoint = dModel.StartPoint + new Point(0, line.ConnNumbEnd * 10);
+                            }
                         }
                     }
                 }
+                
             }
+            
         }
         void StopStruct(object sender,PointerReleasedEventArgs args)
         {
@@ -70,20 +88,38 @@ namespace Diagram.Views
         void FreeStrelochka(object sender, PointerReleasedEventArgs args)
         {
             this.PointerMoved -= NewStrelochka;
-            
-            if(DataContext is MainWindowViewModel wm)
+            bool flag = false;
+            if (DataContext is MainWindowViewModel mw)
             {
-                Line line1 = new Line();
-                line1.EndPoint = line.EndPoint;
-                line1.StrokeThickness = line.StrokeThickness;
-                line1.Stroke = line.Stroke;
-                Point point = new Point(5, 5);
-                line1.StartPoint = line.StartPoint + point;
-                wm._canv.Children.Remove(line);
-                wm._canv.Children.Add(line1);
                 
-            }
+                Point currentPointPos = args
+                            .GetPosition(
+                        this.GetVisualDescendants()
+                        .OfType<Canvas>().FirstOrDefault()
+                        );
+                
+                for (int i = 0; i < mw.COLL.Count(); i++)
+                {
+                    if (mw.COLL[i] is DefStackPanel def)
+                    {
+                        for(int q = 0;q < def.Width; q++)
+                        {
+                            for(int j = 0; j < def.Height; j++)
+                            {
+                                Point point = new Point(q, j);
+                                if (def.StartPoint + point == currentPointPos)
+                                {
+                                    line.ConnNumbEnd = def.Number;
+                                    mw.COLL.Add(line);
+                                    flag = true;
 
+                                }
+                            }
+                        }
+                    }
+                }
+                if (flag == false) mw.COLL.Remove(line);
+            }
             this.PointerReleased -= FreeStrelochka;
         }
         void NewStrelochka(object sender, PointerEventArgs args)
@@ -93,21 +129,25 @@ namespace Diagram.Views
                     this.GetVisualDescendants()
                     .OfType<Canvas>().FirstOrDefault()
                     );
-
-            if(DataContext is MainWindowViewModel wm) {
+            if (DataContext is MainWindowViewModel mw)
+            {
                 if(args.Source is Rectangle rec)
                 {
-                    line.StrokeThickness = 5;
-                    line.StartPoint = rec.Bounds.Position + rec.Parent.Bounds.Position;
-                    line.EndPoint = currentPointPos;
-                    line.Stroke = Brushes.Black;
-                    wm._canv.Children.Remove(line);
-                    wm._canv.Children.Add(line);
+                    if(rec.DataContext is DefStackPanel stackPanel)
+                    {
+                        if(line!=null) mw.COLL.Remove(line);
+                        line = new DefLine
+                        {
+                            StartPoint = stackPanel.StartPoint,
+                            EndPoint = currentPointPos,
+                            ConnNumbStart = stackPanel.Number,
+                            Stroke = Brushes.Black,
+                            StrokeThickness = 5,
+                        };
+                        mw.COLL.Add(line);
+                    }
                 }
-                
-                
             }
-            
         }
     }
 }

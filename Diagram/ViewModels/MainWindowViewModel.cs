@@ -1,70 +1,60 @@
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
-using Avalonia.Controls.Shapes;
 using Avalonia.Media;
 using Diagram.Models;
 using Diagram.Views;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics.SymbolStore;
-using System.Text;
 
 namespace Diagram.ViewModels
 {
     internal partial class MainWindowViewModel : ViewModelBase
     {
-        public ObservableCollection<DModel> Coll = new ObservableCollection<DModel>();
         public Canvas _canv;
+        public int numb = 0;
         public string _name;
-        
-        public string Name
+        public int _posTop = 100;
+        public int _posLeft = 100;
+        private ObservableCollection<DModel> Coll;
+        public MainWindowViewModel(MainWindow mw)
         {
-            get => _name;
-            set => SetProperty(ref _name,value);
-        }
-        public string _coor;
-        public string Coor
-        {
-            get => _coor;
-            set => SetProperty(ref _coor, value);
+            _canv = mw.Find<Canvas>("canvas");
+            Coll = new ObservableCollection<DModel>();
+
         }
         public void CreateClass()
         {
-            Rectangle Rec = new Rectangle();
-            StackPanel stackPanel = new StackPanel();
-            TextBox textBox = new TextBox();
-            Border border = new Border();
-            Avalonia.Thickness thickness = new Thickness(3,3,3,3);
-            border.BorderThickness = thickness;
-            border.BorderBrush = Brushes.Black;
-            stackPanel.Children.Add(border);
-            textBox.Text = Name;
-            textBox.Width = 200;
-            textBox.Margin = thickness;
-            stackPanel.Height = 50;
-            stackPanel.Name = textBox.Text;
-            stackPanel.Children.Add(textBox);
-            Rec.Width = 10;
-            Rec.Height = 10;
-            Rec.StrokeThickness = 2;
-            Rec.Stroke = Brushes.Black;
-            Rec.Fill = Brushes.Black;
-            Canvas.SetLeft(Rec, 200);
-            Canvas.SetTop(Rec, 0);
-            stackPanel.Children.Add(Rec);
-            _canv.Children.Add(stackPanel);
-            Coll.Add(new DModel
+            DefStackPanel stackPanel = new DefStackPanel
             {
-                Name = textBox.Text,
-                Vidimost = true,
+                StartPoint = new Point(200, 200),
+                Name = Name,
+                Number = numb,
+                Height = 50,
+                Width = 50,
+            };
+            numb++;
+            COLL.Add(stackPanel);
+        }
 
-            }) ;
-        }
-        public MainWindowViewModel(MainWindow mw)
+        public ObservableCollection<DModel> COLL
         {
-            _canv = mw.Find<Canvas>("MyCanv");
+            get => Coll;
+            set => this.SetProperty(ref Coll, value);
         }
+        public int PosTop
+        {
+            get => _posTop;
+            set => SetProperty(ref _posTop, value);
+        }
+        public int PosLeft
+        {
+            get => _posLeft;
+            set => SetProperty(ref _posLeft, value);
+        }
+        public string Name
+        {
+            get => _name;
+            set => SetProperty(ref _name, value);
+        }
+    
     }
 }

@@ -3,22 +3,53 @@
         xmlns:vm="using:Diagram.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			xmlns:models="clr-namespace:Diagram.Models"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="Diagram.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
         Title="Diagram">
 
-	<Design.DataContext>
-		<vm:MainWindowViewModel/>
-	</Design.DataContext>
 	<UserControl>
 		<Grid ColumnDefinitions="150,*">
 			<Grid RowDefinitions="*,*,*,*" Grid.Column="0" Margin="10,0,0,0">
 				<TextBox Text="{Binding Name}" Grid.Row="0" Height="50"></TextBox>
 				<Button Command="{Binding CreateClass}" Grid.Row="1">Add</Button>
 			</Grid>
-			
-			<Canvas x:Name="Canv" Name="MyCanv" Grid.Column="1" PointerPressed="PressedOnCanv"></Canvas>
+
+			<ItemsControl Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Items="{Binding COLL}" PointerPressed="PressedOnCanv">
+				<ItemsControl.ItemsPanel>
+					<ItemsPanelTemplate>
+						<Canvas Background="White" Name="canvas"/>
+					</ItemsPanelTemplate>
+				</ItemsControl.ItemsPanel>
+
+				<ItemsControl.DataTemplates>
+					<DataTemplate DataType="{x:Type models:DefStackPanel}">
+						<StackPanel Height="{Binding Height}" Width="{Binding Width}">
+							<StackPanel.Children>
+								<Border Width="30" Height="10" Background="Black" Margin="0,0,0,5"/>
+								<TextBox Text="{Binding Name}"/>
+								<Rectangle Fill="Black" Height="10" Width="10" Margin="0,5,0,0"/>
+							</StackPanel.Children>
+							<StackPanel.RenderTransform>
+								<TransformGroup>
+									<TranslateTransform
+										X="{Binding StartPoint.X}"
+										Y="{Binding StartPoint.Y}"/>
+								</TransformGroup>
+							</StackPanel.RenderTransform>
+						</StackPanel>	
+					</DataTemplate>
+
+					<DataTemplate DataType="{x:Type models:DefLine}">
+						<Line StartPoint="{Binding StartPoint}"
+							  EndPoint="{Binding EndPoint}"
+							  Stroke="{Binding Stroke}"
+							  StrokeThickness="{Binding StrokeThickness}">
+						</Line>
+					</DataTemplate>
+				</ItemsControl.DataTemplates>
+			</ItemsControl>
 		</Grid>
 	</UserControl>
 </Window>
