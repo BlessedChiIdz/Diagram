@@ -1,0 +1,33 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="Diagram.Views.DiagWind"
+        Title="DiagWind"
+		Height="700"
+		Width="400">
+    
+	
+	
+	<Grid RowDefinitions="50,50,50,300,*,*">
+		<TextBox Watermark="Name" Grid.Row="0" Text="{Binding $parent[Window].DataContext.SelName}"/>
+		<TextBox Watermark="Stereotip" Grid.Row="1" Text="{Binding $parent[Window].DataContext.SelSter}"/>
+		<TextBox Watermark="Vidimost" Grid.Row="2" Text="{Binding $parent[Window].DataContext.SelVid}"/>
+		<ListBox SelectedIndex="{Binding SelectedIndex}" Grid.Row="3" Items="{Binding $parent[Window].DataContext.SelList}">
+			<ListBox.ItemTemplate>
+				<DataTemplate>
+					<Border CornerRadius="4" Padding="4">
+						<TextBlock Height="30" Text="{Binding}"/>
+					</Border>
+				</DataTemplate>
+			</ListBox.ItemTemplate>
+		</ListBox>
+		<Grid Grid.Row="4" ColumnDefinitions="*,*">
+			<Button Grid.Column="0" Content="Add" Command="{Binding $parent[Window].DataContext.Add}"/>
+			<Button Grid.Column="1" Content="Remove" Command="{Binding $parent[Window].DataContext.Remove}"/>
+		</Grid>
+		
+		<TextBox Grid.Row="5" Text="{Binding $parent[Window].DataContext.TextForOper}"/>
+	</Grid>
+</Window>

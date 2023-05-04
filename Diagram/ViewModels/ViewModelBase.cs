@@ -8,5 +8,6 @@ namespace Diagram.ViewModels
 {
     public class ViewModelBase : ObservableObject
     {
+
     }
 }

@@ -19,7 +19,6 @@ namespace Diagram.Views
         {
             InitializeComponent();
             DataContext = new MainWindowViewModel(this);
-            
         }
         void PressedOnCanv(object sender, PointerPressedEventArgs args)
         {
@@ -35,6 +34,14 @@ namespace Diagram.Views
                     pointerPosInShape = args.GetPosition(border);
                     this.PointerMoved += MoveStruct;
                     this.PointerReleased += StopStruct;
+                    if(border.DataContext is DefStackPanel def)
+                    {
+                        if (args.ClickCount == 2)
+                        {
+                            mw.SelNumb = def.Number;
+                            ButtonClicked(def);
+                        }
+                    }
                 }
                 if(args.Source is Line line)
                 {
@@ -43,6 +50,7 @@ namespace Diagram.Views
                         mw.COLL.Remove(def);
                     }
                 }
+                
             }
         }
         void MoveStruct(object sender,PointerEventArgs args)
@@ -149,5 +157,16 @@ namespace Diagram.Views
                 }
             }
         }
+        private void ButtonClicked(DefStackPanel def)
+        {
+            if(DataContext is MainWindowViewModel mw)
+            {
+                DiagWind subWindow = new DiagWind();
+                subWindow.DataContext = mw;
+                subWindow.Show();
+            }
+        }
+       
+
     }
 }
